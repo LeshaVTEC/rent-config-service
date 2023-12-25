@@ -62,17 +62,11 @@ public class SecurityConfig {
 
         // Set permissions on endpoints
         http.authorizeHttpRequests(requests -> requests
-                // Our public endpoints
-//                .requestMatchers( "/realty/api/**").permitAll()
-//                //Следующие два пример делают одно и тоже
-                .requestMatchers(GET,"/users").hasAnyRole("ADMIN") //Обрати внимание что тут нет префикса ROLE_
-                .requestMatchers(GET,"/users/{id}").hasAnyRole("ADMIN") //Обрати внимание что тут нет префикса ROLE_
-                .requestMatchers(POST,"/users").hasAnyRole("ADMIN") //Обрати внимание что тут нет префикса ROLE_
-                .requestMatchers(PUT,"/users/{id}").hasAnyRole("ADMIN") //Обрати внимание что тут нет префикса ROLE_
-//                .requestMatchers(GET,"/users").hasAnyAuthority("ROLE_ADMIN") //А тут есть
+                .requestMatchers(GET,"/users").hasAnyRole("ADMIN")
+                .requestMatchers(GET,"/users/{id}").hasAnyRole("ADMIN")
+                .requestMatchers(POST,"/users").hasAnyRole("ADMIN")
+                .requestMatchers(PUT,"/users/{id}").hasAnyRole("ADMIN")
                 .requestMatchers(GET,"/users/**").authenticated()
-//                // Our private endpoints
-//                .anyRequest().authenticated()
         );
 
         // Add JWT token filter

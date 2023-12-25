@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
 import java.util.Properties;
 
 @Configuration

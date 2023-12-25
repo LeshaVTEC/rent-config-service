@@ -1,8 +1,8 @@
 package rentconfigservice.service.jwt;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import rentconfigservice.config.properties.JwtProperty;
 import rentconfigservice.core.dto.UserDetailsDto;
@@ -10,9 +10,9 @@ import rentconfigservice.core.dto.UserDetailsDto;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 @Component
 public class JwtHandler {
-
 
     private final JwtProperty jwtProperty;
     private final ObjectMapper objectMapper;
@@ -23,7 +23,7 @@ public class JwtHandler {
     }
 
     public String generateAccessToken(UserDetailsDto userDetailsDto) {
-       return Jwts.builder()
+        return Jwts.builder()
                 .setSubject(convertDtoToJson(userDetailsDto))
                 .setIssuer(jwtProperty.getIssuer())
                 .setIssuedAt(new Date())
@@ -32,7 +32,7 @@ public class JwtHandler {
                 .compact();
     }
 
-    public UserDetailsDto getUserDetailsDtoFromJwt(String token) throws JsonProcessingException {
+    public UserDetailsDto getUserDetailsDtoFromJwt(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtProperty.getSecret())
                 .parseClaimsJws(token)
@@ -41,31 +41,20 @@ public class JwtHandler {
         return convertDtoFromJson(claims.getSubject());
     }
 
-
-    public Date getExpirationDate(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtProperty.getSecret())
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getExpiration();
-    }
-
-
     public boolean validate(String token) {
         try {
             Jwts.parser().setSigningKey(jwtProperty.getSecret()).parseClaimsJws(token);
             return true;
-        } catch (SignatureException ex) {
-            //logger.error("Invalid JWT signature - {}", ex.getMessage());
-        } catch (MalformedJwtException ex) {
-            //logger.error("Invalid JWT token - {}", ex.getMessage());
-        } catch (ExpiredJwtException ex) {
-            //logger.error("Expired JWT token - {}", ex.getMessage());
-        } catch (UnsupportedJwtException ex) {
-            //logger.error("Unsupported JWT token - {}", ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            //logger.error("JWT claims string is empty - {}", ex.getMessage());
+        } catch (SignatureException exception) {
+            log.error("Invalid JWT signature " + exception.getMessage());
+        } catch (MalformedJwtException exception) {
+            log.error("Invalid JWT token " + exception.getMessage());
+        } catch (ExpiredJwtException exception) {
+            log.error("Expired JWT token " + exception.getMessage());
+        } catch (UnsupportedJwtException exception) {
+            log.error("Unsupported JWT token " + exception.getMessage());
+        } catch (IllegalArgumentException exception) {
+            log.error("JWT claims string is empty " + exception.getMessage());
         }
         return false;
     }

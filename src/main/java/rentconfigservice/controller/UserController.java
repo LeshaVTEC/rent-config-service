@@ -3,10 +3,8 @@ package rentconfigservice.controller;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import rentconfigservice.core.dto.*;
@@ -20,14 +18,15 @@ import java.util.UUID;
 @RequestMapping(value = "/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final PageTransformer pageTransformer;
+    private final TemporarySecretTokenService temporarySecretTokenService;
 
-    @Autowired
-    private PageTransformer pageTransformer;
-
-    @Autowired
-    private TemporarySecretTokenService temporarySecretTokenService;
+    public UserController(UserService userService, PageTransformer pageTransformer, TemporarySecretTokenService temporarySecretTokenService) {
+        this.userService = userService;
+        this.pageTransformer = pageTransformer;
+        this.temporarySecretTokenService = temporarySecretTokenService;
+    }
 
     @GetMapping
     public PageDto<UserInfoDto> getAllUsers(@RequestParam(name = "page", defaultValue = "1") Integer page,
@@ -71,14 +70,8 @@ public class UserController {
 
     @GetMapping("/verification")
     public MessageResponse verifyUser(
-            @Validated
-            @Email
-            @NotNull
-            @RequestParam String email,
-            @Validated
-            @Size(min = 36, max = 36, message = "size must be 36 letters")
-            @NotNull
-            @RequestParam String token
+            @Validated @Email @NotNull @RequestParam String email,
+            @Validated @Size(min = 36, max = 36, message = "size must be 36") @NotNull @RequestParam String token
     ) {
         TemporarySecretTokenDto temporarySecretTokenDto = new TemporarySecretTokenDto(email, UUID.fromString(token));
         userService.verifyUserByEmailAndToken(temporarySecretTokenDto);
@@ -86,7 +79,7 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserInfoDto getInfoAboutMe(){
+    public UserInfoDto getInfoAboutMe() {
         return userService.findInfoAboutMe();
     }
 
@@ -96,13 +89,13 @@ public class UserController {
             @Email
             @NotNull
             @RequestParam String email
-    ){
+    ) {
         userService.sendPasswordRestoreLink(email);
         return new MessageResponse("Ссылка на сброс пароля отправлена вам на почту");
     }
 
     @PostMapping("/update-password")
-    public MessageResponse updatePassword(@Validated @RequestBody PasswordUpdateDto passwordUpdateDto){
+    public MessageResponse updatePassword(@Validated @RequestBody PasswordUpdateDto passwordUpdateDto) {
         userService.updatePassword(passwordUpdateDto);
         return new MessageResponse("Пароль изменен");
     }

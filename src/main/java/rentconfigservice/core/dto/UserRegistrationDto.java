@@ -25,5 +25,4 @@ public class UserRegistrationDto {
     private String password;
 
     private String fio;
-
 }

@@ -1,7 +1,6 @@
 package rentconfigservice.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import rentconfigservice.core.entity.TemporarySecretToken;
 import rentconfigservice.exception.EntityNotFoundException;
@@ -18,7 +17,7 @@ public class TemporarySecretTokenServiceImpl implements TemporarySecretTokenServ
     private TemporarySecretTokenRepository temporarySecretTokenRepository;
 
     @Override
-    public String createToken(String email){
+    public String createToken(String email) {
         UUID token = UUID.randomUUID();
         TemporarySecretToken entity = new TemporarySecretToken(email, token);
         TemporarySecretToken result = temporarySecretTokenRepository.save(entity);
@@ -26,9 +25,9 @@ public class TemporarySecretTokenServiceImpl implements TemporarySecretTokenServ
     }
 
     @Override
-    public String getEmailByToken(String token){
+    public String getEmailByToken(String token) {
         String email = temporarySecretTokenRepository.findEmailByToken(UUID.fromString(token));
-        if(email == null){
+        if (email == null) {
             throw new InvalidLinkException();
         }
         return email;
@@ -36,9 +35,10 @@ public class TemporarySecretTokenServiceImpl implements TemporarySecretTokenServ
 
 
     @Override
-    public void deleteEntityByEmailAndToken(String email, String token){
-        if(temporarySecretTokenRepository.deleteEntityByEmailAndToken(email, UUID.fromString(token)) == 0){
+    public void deleteEntityByEmailAndToken(String email, String token) {
+        if (temporarySecretTokenRepository.deleteEntityByEmailAndToken(email, UUID.fromString(token)) == 0) {
             throw new EntityNotFoundException("User", email);
-        };
+        }
+        ;
     }
 }

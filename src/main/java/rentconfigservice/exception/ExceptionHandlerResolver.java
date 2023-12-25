@@ -43,7 +43,7 @@ public class ExceptionHandlerResolver {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ErrorResponse handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException exception){
+    public ErrorResponse handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException exception) {
         log.error(exception.getMessage());
         return new ErrorResponse("error", exception.getMessage());
     }
@@ -73,11 +73,12 @@ public class ExceptionHandlerResolver {
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleException(Exception exception) {
         log.error(exception.getMessage());
-        return new ErrorResponse("error",
+        return new ErrorResponse(
+                "error",
                 "Сервер не смог корректно обработать запрос. Пожалуйста обратитесь к администратор");
     }
 
-    private ErrorField convert(ObjectError objectError){
+    private ErrorField convert(ObjectError objectError) {
         return new ErrorField(
                 ((FieldError) objectError).getField(),
                 objectError.getDefaultMessage()

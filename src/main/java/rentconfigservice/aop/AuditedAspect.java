@@ -28,7 +28,7 @@ public class AuditedAspect {
 
     private final UserRepository userRepository;
     private final AuditFeignClient auditFeignClient;
-    private final JwtHandler jwtHandler;;
+    private final JwtHandler jwtHandler;
 
     public AuditedAspect(UserRepository userRepository, AuditFeignClient auditFeignClient, JwtHandler jwtHandler) {
         this.userRepository = userRepository;
@@ -116,6 +116,3 @@ public class AuditedAspect {
         return createAuditDto(annotation, findByEmail(dto.getEmail()));
     }
 }
-
-
-

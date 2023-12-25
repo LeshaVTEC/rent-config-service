@@ -1,8 +1,8 @@
 package rentconfigservice.exception;
 
-public class InvalidLinkException extends RuntimeException{
+public class InvalidLinkException extends RuntimeException {
 
-    public InvalidLinkException(){
+    public InvalidLinkException() {
         super("Ссылка устарела или не действительна");
     }
 }

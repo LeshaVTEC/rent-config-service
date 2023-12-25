@@ -1,6 +1,7 @@
 package rentconfigservice.exception.body;
 
 public class ErrorField {
+
     private String field;
     private String message;
 

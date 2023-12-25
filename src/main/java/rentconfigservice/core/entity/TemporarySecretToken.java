@@ -18,7 +18,8 @@ public class TemporarySecretToken {
     @Column(name = "temporary_secret_token")
     private UUID secretToken;
 
-    public TemporarySecretToken() {}
+    public TemporarySecretToken() {
+    }
 
     public TemporarySecretToken(String email, UUID secretToken) {
         this.email = email;

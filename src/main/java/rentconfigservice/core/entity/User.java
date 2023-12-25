@@ -1,23 +1,17 @@
 package rentconfigservice.core.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import rentconfigservice.core.dto.Identifiable;
 import rentconfigservice.core.dto.Userable;
 
-import java.util.List;
-
 @Entity
-@Table(schema = "config", name="users")
+@Table(schema = "config", name = "users")
 public class User extends BaseEntity implements Userable {
 
     private String email;
 
     private String password;
 
-    private String fio;    //TODO validation RegEx
+    private String fio;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")

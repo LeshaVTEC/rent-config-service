@@ -1,6 +1,7 @@
 package rentconfigservice.exception;
 
-public class ValidationException extends RuntimeException{
+public class ValidationException extends RuntimeException {
 
-    public ValidationException(String exception){}
+    public ValidationException(String exception) {
+    }
 }

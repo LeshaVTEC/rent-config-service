@@ -10,6 +10,7 @@ import rentconfigservice.core.entity.UserRole;
 import rentconfigservice.core.entity.UserStatus;
 import rentconfigservice.service.UserPasswordEncoder;
 import rentconfigservice.transformer.UserTransformer;
+
 @Component
 public class UserTransformerImpl implements UserTransformer {
 
