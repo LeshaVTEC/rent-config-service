@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+
+    <changeSet author="org.alexey" id="create_table_tokens">
+        <createTable tableName="tokens" schemaName="${config.schema}">
+            <column name="email" type="varchar">
+                <constraints primaryKey="true" nullable="false" primaryKeyName="tokens_id_pk" unique="true"/>
+            </column>
+            <column name="temporary_secret_token" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="tokens"
+                                 baseColumnNames="email"
+                                 baseTableSchemaName="${config.schema}"
+                                 constraintName="tokens_email"
+                                 referencedTableSchemaName="${config.schema}"
+                                 referencedTableName="users"
+                                 referencedColumnNames="email"/>
+    </changeSet>
+</databaseChangeLog>
