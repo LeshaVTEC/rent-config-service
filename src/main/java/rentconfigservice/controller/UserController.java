@@ -22,7 +22,11 @@ public class UserController {
     private final PageTransformer pageTransformer;
     private final TemporarySecretTokenService temporarySecretTokenService;
 
-    public UserController(UserService userService, PageTransformer pageTransformer, TemporarySecretTokenService temporarySecretTokenService) {
+    public UserController(
+            UserService userService,
+            PageTransformer pageTransformer,
+            TemporarySecretTokenService temporarySecretTokenService
+    ) {
         this.userService = userService;
         this.pageTransformer = pageTransformer;
         this.temporarySecretTokenService = temporarySecretTokenService;

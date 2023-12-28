@@ -11,7 +11,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @FeignClient(name = "audit-logs", url = "${custom.feign.audit-logs.url}/audit")
 public interface AuditFeignClient {
 
-    @PostMapping(value = "/", produces = APPLICATION_JSON_VALUE)
+    @PostMapping(produces = APPLICATION_JSON_VALUE)
     AuditDto sendRequestToCreateLog(
             @RequestHeader String AUTHORIZATION,
             @RequestBody AuditDto auditDto
