@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import rentconfigservice.core.dto.*;
 import rentconfigservice.core.entity.User;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface UserService {
@@ -13,19 +14,15 @@ public interface UserService {
 
     UserInfoDto findUserById(UUID id);
 
+    User createUserByAdmin(UserCreationDto userCreationDto);
+
     User createUser(UserCreationDto userCreationDto);
 
-    User updateUser(UserCreationDto userCreationDto, UUID id);
+    User updateUser(UserCreationDto userCreationDto, UUID id, LocalDateTime updateDate);
 
-    User registrateUser(UserRegistrationDto userRegistrationDto);
+    UserQueryDto getUserQueryDto(String email);
 
-    String loginUser(UserLoginDto userLoginDto);
+    UserDetailsDto getUserDetailsDto(String email);
 
-    void verifyUserByEmailAndToken(TemporarySecretTokenDto temporarySecretTokenDto);
-
-    UserInfoDto findInfoAboutMe();
-
-    User updatePassword(PasswordUpdateDto passwordUpdateDto);
-
-    void sendPasswordRestoreLink(String email);
+    void activationUser(String email);
 }

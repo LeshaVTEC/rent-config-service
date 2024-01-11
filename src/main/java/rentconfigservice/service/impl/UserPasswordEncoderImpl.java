@@ -1,6 +1,5 @@
 package rentconfigservice.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import rentconfigservice.service.UserPasswordEncoder;
@@ -8,8 +7,11 @@ import rentconfigservice.service.UserPasswordEncoder;
 @Component
 public class UserPasswordEncoderImpl implements UserPasswordEncoder {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserPasswordEncoderImpl(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public String encodePassword(String plainPassword) {

@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/realty
+    url: jdbc:postgresql://user-database:5432/user
     username: postgres
     password: postgres
     hikari:
@@ -25,10 +25,23 @@ spring:
           starttls:
             enable: true
 server:
-  port: 8080
+  port: 80
   servlet:
     context-path: "/realty/api"
-app:
+
+custom:
   jwt:
     secret: QAZ1ZjAzNjQtMzViZi00MDRjLTljZjQtNjNjYWIyZTU5ZDYz
     issuer: org.alexey
+  feign:
+    audit-logs:
+      url: http://audit-service:80/realty/api
+  email:
+    messages:
+      verification: |
+        follow the link below to complete the verification process in the application search-realty 
+        http://user-service:80/realty/api/users/verification?email=%s&token=%s
+      updatePassword: |
+        follow the link bellow to change your password in the application search-realty
+        If you do not want change the password in the application, then ignore this letter.  
+        http://user-service:80/realty/forgot-password?token=%s

@@ -1,8 +1,8 @@
 package rentconfigservice.transformer.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import rentconfigservice.core.dto.UserCreationDto;
+import rentconfigservice.core.dto.UserDetailsDto;
 import rentconfigservice.core.dto.UserInfoDto;
 import rentconfigservice.core.dto.UserRegistrationDto;
 import rentconfigservice.core.entity.User;
@@ -11,11 +11,16 @@ import rentconfigservice.core.entity.UserStatus;
 import rentconfigservice.service.UserPasswordEncoder;
 import rentconfigservice.transformer.UserTransformer;
 
+import java.time.ZoneId;
+
 @Component
 public class UserTransformerImpl implements UserTransformer {
 
-    @Autowired
-    private UserPasswordEncoder userPasswordEncoder;
+    private final UserPasswordEncoder userPasswordEncoder;
+
+    public UserTransformerImpl(UserPasswordEncoder userPasswordEncoder) {
+        this.userPasswordEncoder = userPasswordEncoder;
+    }
 
     @Override
     public UserInfoDto transformInfoDtoFromEntity(User user) {
@@ -25,8 +30,8 @@ public class UserTransformerImpl implements UserTransformer {
                 .setFio(user.getFio())
                 .setRole(user.getUserRole())
                 .setStatus(user.getStatus())
-                .setCreatedDate(user.getCreationDate())
-                .setUpdatedDate(user.getUpdateDate());
+                .setCreatedDate(user.getCreationDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+                .setUpdatedDate(user.getUpdateDate().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
     }
 
     @Override
@@ -56,6 +61,24 @@ public class UserTransformerImpl implements UserTransformer {
                 .setPassword(userPasswordEncoder.encodePassword(userRegistrationDto.getPassword()))
                 .setFio(userRegistrationDto.getFio())
                 .setUserRole(UserRole.USER)
+                .setStatus(UserStatus.WAITING_ACTIVATION);
+    }
+
+    @Override
+    public UserCreationDto transformCreationDtoFromRegistrationDto(UserRegistrationDto userRegistrationDto){
+        return new UserCreationDto().setEmail(userRegistrationDto.getEmail())
+                .setPassword(userRegistrationDto.getPassword())
+                .setFio(userRegistrationDto.getFio())
+                .setStatus(UserStatus.WAITING_ACTIVATION)
+                .setRole(UserRole.USER);
+    }
+
+    @Override
+    public UserCreationDto transformCreationDtoFromDetailsDto(UserDetailsDto userDetailsDto, String password){
+        return new UserCreationDto().setEmail(userDetailsDto.getEmail())
+                .setPassword(password)
+                .setFio(userDetailsDto.getFio())
+                .setRole(userDetailsDto.getRole())
                 .setStatus(UserStatus.WAITING_ACTIVATION);
     }
 }

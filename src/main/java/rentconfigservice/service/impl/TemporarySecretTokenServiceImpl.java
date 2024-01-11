@@ -1,10 +1,9 @@
 package rentconfigservice.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rentconfigservice.core.entity.TemporarySecretToken;
 import rentconfigservice.exception.EntityNotFoundException;
-import rentconfigservice.exception.InvalidLinkException;
 import rentconfigservice.repository.TemporarySecretTokenRepository;
 import rentconfigservice.service.TemporarySecretTokenService;
 
@@ -13,9 +12,13 @@ import java.util.UUID;
 @Service
 public class TemporarySecretTokenServiceImpl implements TemporarySecretTokenService {
 
-    @Autowired
-    private TemporarySecretTokenRepository temporarySecretTokenRepository;
+    private final TemporarySecretTokenRepository temporarySecretTokenRepository;
 
+    public TemporarySecretTokenServiceImpl(TemporarySecretTokenRepository temporarySecretTokenRepository) {
+        this.temporarySecretTokenRepository = temporarySecretTokenRepository;
+    }
+
+    @Transactional
     @Override
     public String createToken(String email) {
         UUID token = UUID.randomUUID();
@@ -28,12 +31,14 @@ public class TemporarySecretTokenServiceImpl implements TemporarySecretTokenServ
     public String getEmailByToken(String token) {
         String email = temporarySecretTokenRepository.findEmailByToken(UUID.fromString(token));
         if (email == null) {
-            throw new InvalidLinkException();
+//            throw new InvalidLinkException();
+            throw new RuntimeException();
         }
         return email;
     }
 
 
+    @Transactional
     @Override
     public void deleteEntityByEmailAndToken(String email, String token) {
         if (temporarySecretTokenRepository.deleteEntityByEmailAndToken(email, UUID.fromString(token)) == 0) {

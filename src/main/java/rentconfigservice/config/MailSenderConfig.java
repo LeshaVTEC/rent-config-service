@@ -11,7 +11,7 @@ import java.util.Properties;
 @Configuration
 public class MailSenderConfig {
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.username}") // todo property class always @Value
     private String login;
 
     @Value("${spring.mail.app-password}")

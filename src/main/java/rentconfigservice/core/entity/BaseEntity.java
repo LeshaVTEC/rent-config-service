@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,9 +18,12 @@ import java.util.UUID;
 public abstract class BaseEntity implements Serializable {
     @Id
     private UUID id = UUID.randomUUID();
+
     @CreatedDate
     @Column(name = "created_date")
     private LocalDateTime creationDate;
+
+    @Version
     @LastModifiedDate
     @Column(name = "updated_date")
     private LocalDateTime updateDate;

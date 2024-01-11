@@ -6,12 +6,29 @@ import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import rentconfigservice.core.dto.*;
-import rentconfigservice.service.TemporarySecretTokenService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import rentconfigservice.core.dto.MessageResponse;
+import rentconfigservice.core.dto.PageDto;
+import rentconfigservice.core.dto.PasswordUpdateDto;
+import rentconfigservice.core.dto.TemporarySecretTokenDto;
+import rentconfigservice.core.dto.UserCreationDto;
+import rentconfigservice.core.dto.UserInfoDto;
+import rentconfigservice.core.dto.UserLoginDto;
+import rentconfigservice.core.dto.UserRegistrationDto;
+import rentconfigservice.service.AuthenticationService;
 import rentconfigservice.service.UserService;
 import rentconfigservice.transformer.PageTransformer;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 @RestController
@@ -19,17 +36,17 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationService authenticationService;
     private final PageTransformer pageTransformer;
-    private final TemporarySecretTokenService temporarySecretTokenService;
 
     public UserController(
             UserService userService,
-            PageTransformer pageTransformer,
-            TemporarySecretTokenService temporarySecretTokenService
+            AuthenticationService authenticationService,
+            PageTransformer pageTransformer
     ) {
         this.userService = userService;
+        this.authenticationService = authenticationService;
         this.pageTransformer = pageTransformer;
-        this.temporarySecretTokenService = temporarySecretTokenService;
     }
 
     @GetMapping
@@ -48,27 +65,29 @@ public class UserController {
 
     @PostMapping
     public MessageResponse createUser(@Validated @RequestBody UserCreationDto userCreationDto) {
-        userService.createUser(userCreationDto);
+        userService.createUserByAdmin(userCreationDto);
         return new MessageResponse("Пользователь добавлен!");
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/dt_update/{dt_update}")
     public MessageResponse updateUser(
-            @Validated @NotNull @PathVariable UUID id,
+            @PathVariable(name = "id") UUID id,
+            @PathVariable(name="dt_update") Long updateDate,
             @Validated @RequestBody UserCreationDto userCreationDto) {
-        userService.updateUser(userCreationDto, id);
+        LocalDateTime updatedDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(updateDate), ZoneId.systemDefault());
+        userService.updateUser(userCreationDto, id, updatedDate);
         return new MessageResponse("Пользователь обновлён!");
     }
 
     @PostMapping("/registration")
     public MessageResponse registerUser(@Validated @RequestBody UserRegistrationDto userRegistrationDto) {
-        userService.registrateUser(userRegistrationDto);
+        authenticationService.registrateUser(userRegistrationDto);
         return new MessageResponse("Пользователь добавлен!");
     }
 
     @PostMapping("/login")
     public MessageResponse loginUser(@Validated @RequestBody UserLoginDto userLoginDto) {
-        String token = userService.loginUser(userLoginDto);
+        String token = authenticationService.loginUser(userLoginDto);
         return new MessageResponse("Вход выполнен. Токен для Authorization Header " + token);
     }
 
@@ -78,13 +97,13 @@ public class UserController {
             @Validated @Size(min = 36, max = 36, message = "size must be 36") @NotNull @RequestParam String token
     ) {
         TemporarySecretTokenDto temporarySecretTokenDto = new TemporarySecretTokenDto(email, UUID.fromString(token));
-        userService.verifyUserByEmailAndToken(temporarySecretTokenDto);
-        return new MessageResponse("Пользователь верифицирован");
+        authenticationService.verifyUserByEmailAndToken(temporarySecretTokenDto);
+        return new MessageResponse("You have been verified");
     }
 
     @GetMapping("/me")
     public UserInfoDto getInfoAboutMe() {
-        return userService.findInfoAboutMe();
+        return authenticationService.findInfoAboutMe();
     }
 
     @PostMapping("/send-password-restore-link")
@@ -94,13 +113,13 @@ public class UserController {
             @NotNull
             @RequestParam String email
     ) {
-        userService.sendPasswordRestoreLink(email);
+        authenticationService.sendPasswordRestoreLink(email);
         return new MessageResponse("Ссылка на сброс пароля отправлена вам на почту");
     }
 
     @PostMapping("/update-password")
     public MessageResponse updatePassword(@Validated @RequestBody PasswordUpdateDto passwordUpdateDto) {
-        userService.updatePassword(passwordUpdateDto);
+        authenticationService.updatePassword(passwordUpdateDto);
         return new MessageResponse("Пароль изменен");
     }
 }

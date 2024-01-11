@@ -27,7 +27,7 @@ public class JwtHandler {
                 .setSubject(convertDtoToJson(userDetailsDto))
                 .setIssuer(jwtProperty.getIssuer())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(10)))
                 .signWith(SignatureAlgorithm.HS512, jwtProperty.getSecret())
                 .compact();
     }

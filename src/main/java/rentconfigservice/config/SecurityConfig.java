@@ -1,49 +1,32 @@
 package rentconfigservice.config;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import rentconfigservice.controller.filter.JwtFilter;
 
-import static org.springframework.http.HttpMethod.*;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Bean
-    @Order(SecurityProperties.IGNORED_ORDER)
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring()
-                .requestMatchers(POST, "/users/registration")
-                .requestMatchers(POST, "/users/login")
-                .requestMatchers(GET, "/users/verification")
-                .requestMatchers(POST, "/users/send-password-restore-link")
-                .requestMatchers(POST, "/users/update-password")
-                .requestMatchers(OPTIONS, "/**");
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter filter) throws Exception  {
-        // Enable CORS and disable CSRF
         http = http.cors().and().csrf().disable();
 
-        // Set session management to stateless
         http = http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and();
 
-        // Set unauthorized requests exception handler
         http = http
                 .exceptionHandling()
                 .authenticationEntryPoint(
@@ -60,16 +43,21 @@ public class SecurityConfig {
                 })
                 .and();
 
-        // Set permissions on endpoints
+
         http.authorizeHttpRequests(requests -> requests
+                .requestMatchers(POST,"/users/registration").permitAll()
+                .requestMatchers(POST,"/users/login").permitAll()
+                .requestMatchers(GET,"/users/verification").permitAll()
+                .requestMatchers(GET,"/users/me").authenticated()
+                .requestMatchers(POST,"/users/send-password-restore-link").permitAll()
+                .requestMatchers(POST,"/users/update-password").permitAll()
                 .requestMatchers(GET,"/users").hasAnyRole("ADMIN")
                 .requestMatchers(GET,"/users/{id}").hasAnyRole("ADMIN")
                 .requestMatchers(POST,"/users").hasAnyRole("ADMIN")
                 .requestMatchers(PUT,"/users/{id}").hasAnyRole("ADMIN")
-                .requestMatchers(GET,"/users/**").authenticated()
+                .anyRequest().authenticated()
         );
 
-        // Add JWT token filter
         http.addFilterBefore(
                 filter,
                 UsernamePasswordAuthenticationFilter.class

@@ -17,7 +17,6 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class PasswordUpdateDto {
 
-    @Size(min = 36, max = 36, message = "size must be 36 letters")
     @NotNull
     private UUID token;
 
