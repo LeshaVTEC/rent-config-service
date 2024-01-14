@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import rentconfigservice.core.dto.MessageResponse;
 import rentconfigservice.core.dto.PageDto;
@@ -63,42 +66,40 @@ public class UserController {
         return userService.findUserById(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public MessageResponse createUser(@Validated @RequestBody UserCreationDto userCreationDto) {
+    public void createUser(@Validated @RequestBody UserCreationDto userCreationDto) {
         userService.createUserByAdmin(userCreationDto);
-        return new MessageResponse("Пользователь добавлен!");
     }
 
     @PutMapping("/{id}/dt_update/{dt_update}")
-    public MessageResponse updateUser(
+    public void updateUser(
             @PathVariable(name = "id") UUID id,
             @PathVariable(name="dt_update") Long updateDate,
             @Validated @RequestBody UserCreationDto userCreationDto) {
         LocalDateTime updatedDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(updateDate), ZoneId.systemDefault());
         userService.updateUser(userCreationDto, id, updatedDate);
-        return new MessageResponse("Пользователь обновлён!");
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/registration")
-    public MessageResponse registerUser(@Validated @RequestBody UserRegistrationDto userRegistrationDto) {
+    public void registerUser(@Validated @RequestBody UserRegistrationDto userRegistrationDto) {
         authenticationService.registrateUser(userRegistrationDto);
-        return new MessageResponse("Пользователь добавлен!");
     }
 
     @PostMapping("/login")
-    public MessageResponse loginUser(@Validated @RequestBody UserLoginDto userLoginDto) {
+    public ResponseEntity loginUser(@Validated @RequestBody UserLoginDto userLoginDto) {
         String token = authenticationService.loginUser(userLoginDto);
-        return new MessageResponse("Вход выполнен. Токен для Authorization Header " + token);
+        return ResponseEntity.ok().header("Authorization", token).body(token);
     }
 
     @GetMapping("/verification")
-    public MessageResponse verifyUser(
+    public void verifyUser(
             @Validated @Email @NotNull @RequestParam String email,
             @Validated @Size(min = 36, max = 36, message = "size must be 36") @NotNull @RequestParam String token
     ) {
         TemporarySecretTokenDto temporarySecretTokenDto = new TemporarySecretTokenDto(email, UUID.fromString(token));
         authenticationService.verifyUserByEmailAndToken(temporarySecretTokenDto);
-        return new MessageResponse("You have been verified");
     }
 
     @GetMapping("/me")

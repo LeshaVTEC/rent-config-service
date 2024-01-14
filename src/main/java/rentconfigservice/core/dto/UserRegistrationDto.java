@@ -18,7 +18,7 @@ public class UserRegistrationDto {
 
     @Email(message = "Email should be valid")
     @NotNull
-    private String email;
+    private String mail;
 
     @NotNull
     @Size(min = 6, max = 12)

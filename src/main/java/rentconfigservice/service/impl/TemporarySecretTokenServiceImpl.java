@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rentconfigservice.core.entity.TemporarySecretToken;
 import rentconfigservice.exception.EntityNotFoundException;
+import rentconfigservice.exception.InvalidLinkException;
 import rentconfigservice.repository.TemporarySecretTokenRepository;
 import rentconfigservice.service.TemporarySecretTokenService;
 
@@ -31,8 +32,7 @@ public class TemporarySecretTokenServiceImpl implements TemporarySecretTokenServ
     public String getEmailByToken(String token) {
         String email = temporarySecretTokenRepository.findEmailByToken(UUID.fromString(token));
         if (email == null) {
-//            throw new InvalidLinkException();
-            throw new RuntimeException();
+            throw new InvalidLinkException();
         }
         return email;
     }

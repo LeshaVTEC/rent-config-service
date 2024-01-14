@@ -5,7 +5,7 @@ public enum AuditedAction {
     VERIFICATION("пройден процесс верификации"),
     LOGIN("пройден процесс авторизации"),
     INFO_ABOUT_ME("запрошена информация о себе"),
-    UPDATE_PASSWORD("пароль обновлен"),
+    UPDATE_PASSWORD("пользователь обновил пароль"),
     INFO_ABOUT_ALL_USERS("запрошена информация о всех пользователях"),
     INFO_ABOUT_USER_BY_ID("запрошена информация о юзере по индентификатору"),
     CREATE_USER("создан юзер"),

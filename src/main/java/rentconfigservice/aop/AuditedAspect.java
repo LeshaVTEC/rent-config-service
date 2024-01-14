@@ -113,6 +113,6 @@ public class AuditedAspect {
 
     private AuditDto getAuditDtoByEmail(ProceedingJoinPoint joinPoint, Audited annotation) {
         Emailable dto = (Emailable) Arrays.stream(joinPoint.getArgs()).toList().get(0);
-        return createAuditDto(annotation, findByEmail(dto.getEmail()));
+        return createAuditDto(annotation, findByEmail(dto.getMail()));
     }
 }

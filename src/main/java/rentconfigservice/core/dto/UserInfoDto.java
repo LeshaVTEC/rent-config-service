@@ -1,5 +1,6 @@
 package rentconfigservice.core.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
@@ -21,11 +22,12 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class UserInfoDto implements Identifiable {
 
+    @JsonProperty("uuid")
     private UUID id;
 
     @Email(message = "Email should be valid")
     @NotNull
-    private String email;
+    private String mail;
 
     private String fio;
 
@@ -36,7 +38,9 @@ public class UserInfoDto implements Identifiable {
     @NotNull
     private UserStatus status;
 
+    @JsonProperty("dt_create")
     private Long createdDate;
 
+    @JsonProperty("dt_update")
     private Long updatedDate;
 }

@@ -26,7 +26,7 @@ public class UserTransformerImpl implements UserTransformer {
     public UserInfoDto transformInfoDtoFromEntity(User user) {
         return new UserInfoDto()
                 .setId(user.getId())
-                .setEmail(user.getEmail())
+                .setMail(user.getEmail())
                 .setFio(user.getFio())
                 .setRole(user.getUserRole())
                 .setStatus(user.getStatus())
@@ -37,7 +37,7 @@ public class UserTransformerImpl implements UserTransformer {
     @Override
     public UserCreationDto transformCreateDtoFromEntity(User user) {
         return new UserCreationDto()
-                .setEmail(user.getEmail())
+                .setMail(user.getEmail())
                 .setPassword(user.getPassword())
                 .setFio(user.getFio())
                 .setRole(user.getUserRole())
@@ -47,7 +47,7 @@ public class UserTransformerImpl implements UserTransformer {
     @Override
     public User transformEntityFromCreateDto(UserCreationDto userCreationDto) {
         return new User()
-                .setEmail(userCreationDto.getEmail())
+                .setEmail(userCreationDto.getMail())
                 .setPassword(userPasswordEncoder.encodePassword(userCreationDto.getPassword()))
                 .setFio(userCreationDto.getFio())
                 .setUserRole(userCreationDto.getRole())
@@ -57,7 +57,7 @@ public class UserTransformerImpl implements UserTransformer {
     @Override
     public User transformEntityFromRegistrationDto(UserRegistrationDto userRegistrationDto) {
         return new User()
-                .setEmail(userRegistrationDto.getEmail())
+                .setEmail(userRegistrationDto.getMail())
                 .setPassword(userPasswordEncoder.encodePassword(userRegistrationDto.getPassword()))
                 .setFio(userRegistrationDto.getFio())
                 .setUserRole(UserRole.USER)
@@ -66,7 +66,7 @@ public class UserTransformerImpl implements UserTransformer {
 
     @Override
     public UserCreationDto transformCreationDtoFromRegistrationDto(UserRegistrationDto userRegistrationDto){
-        return new UserCreationDto().setEmail(userRegistrationDto.getEmail())
+        return new UserCreationDto().setMail(userRegistrationDto.getMail())
                 .setPassword(userRegistrationDto.getPassword())
                 .setFio(userRegistrationDto.getFio())
                 .setStatus(UserStatus.WAITING_ACTIVATION)
@@ -75,7 +75,7 @@ public class UserTransformerImpl implements UserTransformer {
 
     @Override
     public UserCreationDto transformCreationDtoFromDetailsDto(UserDetailsDto userDetailsDto, String password){
-        return new UserCreationDto().setEmail(userDetailsDto.getEmail())
+        return new UserCreationDto().setMail(userDetailsDto.getEmail())
                 .setPassword(password)
                 .setFio(userDetailsDto.getFio())
                 .setRole(userDetailsDto.getRole())

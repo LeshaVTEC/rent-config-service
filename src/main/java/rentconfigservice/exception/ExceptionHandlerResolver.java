@@ -3,6 +3,7 @@ package rentconfigservice.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -76,6 +77,22 @@ public class ExceptionHandlerResolver {
         return new ErrorResponse(
                 "error",
                 "Сервер не смог корректно обработать запрос. Пожалуйста обратитесь к администратор");
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValidationException.class)
+    public ErrorResponse handleValidationException(ValidationException exception) {
+        log.error(exception.getMessage());
+        return new ErrorResponse("error",
+                exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ErrorResponse handleHandlerResolverException(HttpMessageNotReadableException exception) {
+        log.error(exception.getMessage());
+        return new ErrorResponse("error",
+                exception.getMessage());
     }
 
     private ErrorField convert(ObjectError objectError) {

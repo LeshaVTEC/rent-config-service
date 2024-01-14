@@ -68,7 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Audited(auditedAction = LOGIN, essenceType = USER)
     public String loginUser(UserLoginDto userLoginDto) {
-        UserQueryDto userQueryDto = userService.getUserQueryDto(userLoginDto.getEmail());
+        UserQueryDto userQueryDto = userService.getUserQueryDto(userLoginDto.getMail());
 
         if (!userPasswordEncoder.passwordMatches(userLoginDto.getPassword(), userQueryDto.getPassword())) {
             throw new RuntimeException("wrong password");
@@ -77,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new RuntimeException("verification failed or your account deactivated");
         }
 
-        return jwtHandler.generateAccessToken(userService.getUserDetailsDto(userLoginDto.getEmail()));
+        return jwtHandler.generateAccessToken(userService.getUserDetailsDto(userLoginDto.getMail()));
     }
 
     @Transactional

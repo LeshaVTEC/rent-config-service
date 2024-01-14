@@ -1,5 +1,6 @@
 package rentconfigservice.core.dto.audit;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -18,12 +19,15 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class UserAuditDto {
 
+    @JsonProperty("uuid")
     private UUID userId;
 
+    @JsonProperty("mail")
     private String email;
 
     private String fio;
 
+    @JsonProperty("role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 

@@ -15,7 +15,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class TemporarySecretTokenDto implements Emailable {
 
-    private String email;
+    private String mail;
 
     private UUID secretToken;
 
