@@ -16,6 +16,7 @@ import rentconfigservice.core.entity.User;
 import rentconfigservice.core.entity.UserRole;
 import rentconfigservice.exception.EntityNotFoundException;
 import rentconfigservice.httpclients.AuditFeignClient;
+import rentconfigservice.httpclients.AuditNoSqlFeignClient;
 import rentconfigservice.repository.UserRepository;
 import rentconfigservice.service.jwt.JwtHandler;
 
@@ -28,11 +29,13 @@ public class AuditedAspect {
 
     private final UserRepository userRepository;
     private final AuditFeignClient auditFeignClient;
+    private final AuditNoSqlFeignClient auditNoSqlFeignClient;
     private final JwtHandler jwtHandler;
 
-    public AuditedAspect(UserRepository userRepository, AuditFeignClient auditFeignClient, JwtHandler jwtHandler) {
+    public AuditedAspect(UserRepository userRepository, AuditFeignClient auditFeignClient, AuditNoSqlFeignClient auditNoSqlFeignClient, JwtHandler jwtHandler) {
         this.userRepository = userRepository;
         this.auditFeignClient = auditFeignClient;
+        this.auditNoSqlFeignClient = auditNoSqlFeignClient;
         this.jwtHandler = jwtHandler;
     }
 
@@ -43,7 +46,8 @@ public class AuditedAspect {
         Object result = joinPoint.proceed();
         AuditDto auditDto = buildAuditDto(joinPoint, annotation, result);
         String token = "Bearer " + jwtHandler.generateAccessToken(new UserDetailsDto().setRole(UserRole.SYSTEM));
-        auditFeignClient.sendRequestToCreateLog(token, auditDto);
+//        auditFeignClient.sendRequestToCreateLog(token, auditDto);
+        auditNoSqlFeignClient.sendRequestToCreateLogNoSql(token, auditDto);
         return result;
     }
 

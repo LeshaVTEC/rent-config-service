@@ -6,6 +6,8 @@ custom:
   feign:
     audit-logs:
       url: http://localhost:8081/realty/api
+    audit-logs-no-sql:
+      url: http://localhost:8085/realty/api
   email:
     messages:
       verification: |
